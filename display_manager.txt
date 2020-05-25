@@ -1,0 +1,24 @@
+#install display manager [lightdm] and xorg-server 
+sudo pacman -S lightdm xorg-server
+
+#install greeter [webkit2]
+sudo pacman -S lightdm-webkit2-greeter
+
+#[OPTIONAL] check available greeters
+ls -1 /usr/share/xgreeters/
+
+
+#switch greeter to webkit2-greeter    IMPORTANT: remove "#" !!
+sudo nano /etc/lightdm/lightdm.conf
+    [Seat:*]
+    ...
+    greeter-session=lightdm-webkit2-greeter
+    ...
+
+#enable display manager
+sudo systemctl enable lightdm
+
+#reboot
+sudo reboot now
+
+#success!

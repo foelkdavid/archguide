@@ -1,0 +1,15 @@
+#create new user
+useradd -m username
+passwd username
+usermod -a -G wheel username
+
+#setup sudo
+pacman -S sudo
+EDITOR=nano visudo
+    uncomment %wheel ALL=(ALL) ALL
+    #optional: make wheel group shutdown without password
+        %group_name ALL=(ALL) NOPASSWD: /sbin/poweroff, /sbin/reboot, /sbin/shutdown
+
+#lock root user (login as new user)
+sudo passwd -l root
+

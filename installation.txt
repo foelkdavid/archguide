@@ -1,0 +1,85 @@
+#set keyboard to german
+loadkeys de-latin1
+
+#setup wifi
+wifi-menu
+
+#list disks
+fdisk -l
+#edit partitions
+fdisk /dev/sdX
+    #show partitions:   p
+    #delete partition:  d
+    #create new:        n
+    #write changes:     w
+
+#create filesystem on new partitions
+mkfs.ext4 /dev/sdX1
+
+#mount new filesystems to /mnt
+mount /dev/sdX1 /mnt
+
+#install essential packages
+pacstrap /mnt base linux linux-firmware
+
+#create fstab file
+genfstab -U /mnt >> /mnt/etc/fstab
+
+#chroot into mnt
+arch-chroot /mnt
+
+#change timezone
+ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+hwclock --systohc
+
+#generate locales
+locale-gen
+
+#install nano
+pacman -S nano
+
+#switch language
+nano /etc/locale.conf
+    LANG=en_US.UTF-8
+
+#switch keyboard
+nano /etc/vconsole.conf
+    KEYMAP=de-latin1
+
+#change hostname
+nano /etc/hostname
+    myhostname
+nano /etc/hosts
+    127.0.0.1	localhost
+    ::1		    localhost
+    127.0.1.1	myhostname.localdomain	myhostname
+
+#set root password
+passwd
+    mypassword
+
+#setup dhcpcd
+pacman -S dhcpcd
+systemctl enable dhcpcd
+
+#install wifi-menu
+pacman -S netctl
+pacman -S dialog
+pacman -S wpa_supplicant
+systemctl enable netctl
+systemctl enable wpa_supplicant
+
+#install grub
+
+#BIOS:
+pacman -S grub
+grub-install --target=i386-pc /dev/sdX
+grub-mkconfig -o /boot/grub/grub.cfg
+
+#UEFI:
+
+#install microcode
+#intel
+    pacman -S intel-ucode
+#amd
+    pacman -S amd-ucode

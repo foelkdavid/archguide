@@ -1,0 +1,10 @@
+#install dependencies to create AUR packages
+    #install fakeroot
+    sudo pacman -S git binutils make gcc pkg-config fakeroot patch
+
+#download AUR packages
+git clone AURpkg.git
+
+#install AUR packages
+cd AURPkg
+makepkg -si PKGBUILD
